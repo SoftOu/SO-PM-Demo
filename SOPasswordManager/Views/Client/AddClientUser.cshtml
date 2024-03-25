@@ -1,0 +1,85 @@
+﻿@model SOPasswordManager.Models.ClientUserModel
+<!-- Modal content-->
+
+@if (Model.ClientUserId == 0)
+{
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 id="modaltitle" class="modal-title">Add Client User</h4>
+</div>
+}
+else
+{
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modaltitle" class="modal-title">Edit Client User</h4>
+    </div>
+}
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col">
+            <form asp-controller="Client" asp-action="AddClientUser" method="post" id="AddClientUserForm" role="form">
+                <input type="hidden" id="hdnClientUser_ID" name="ClientUserId" value="@Model.ClientUserId" />
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Client</label>
+                            <select asp-for="ClientId" data-val-required="Please select client." class="form-control m-select2 required" style="width:100%;" asp-items="@(new SelectList(@ViewBag.ClientList, "Value", "Text"))"></select>
+                            <span asp-validation-for="ClientId"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Role</label>
+                            <select asp-for="RoleId" data-val-required="Please select role." class="form-control m-select2 required" style="width:100%;" asp-items="@(new SelectList(@ViewBag.RoleNameList, "Value", "Text"))"></select>
+                            <span asp-validation-for="RoleId"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>First Name</label>
+                            <input type="text" asp-for="FirstName" data-val-required="First name is required." class="form-control required" placeholder="First Name" maxlength="45" tabindex="1" data-val-required="This field is required." />
+                            <span asp-validation-for="FirstName"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Last Name</label>
+                            <input type="text" asp-for="LastName" data-val-required="Last name is required." class="form-control required" placeholder="Last Name" maxlength="45" tabindex="2" data-val-required="This f is required." />
+                            <span asp-validation-for="LastName"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Email </label>
+                            <input type="email" asp-for="Email" data-val-required="Email is required." class="form-control required" maxlength="240" placeholder="Email" tabindex="3" />
+                            <span asp-validation-for="Email"></span>
+                        </div>                                  
+                        <div class="form-group col-md-6">
+                            <label>Phone</label>
+                            <input type="text" asp-for="PhoneNumber" data-val-required="Phone is required." onkeypress="return isNumberKey(event)" class="form-control required" maxlength="40" placeholder="Phone" tabindex="4" />
+                            <span asp-validation-for="PhoneNumber"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-12">
+                            <input type="submit" id="btnSave" class="btn btn-primary" value="Save">
+                            <a href="@Url.Action("ClientUser","Client")" class="btn btn-default ">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+        </form>
+    </div>
+    </div>
+</div>
+
+
+<script src="~/js/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>

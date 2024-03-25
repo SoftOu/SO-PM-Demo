@@ -1,0 +1,143 @@
+﻿@model SOPasswordManager.Repo.DTO.LoginViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>So-Password Manager | Log in</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/css/ionicons.min.css" rel="stylesheet" />
+    <link href="~/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="~/css/blue.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="~/images/favicon.jpg" type="image/png" />
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <style>
+        .login-box, .register-box {
+            max-width: 360px;
+            margin: 0% auto;
+            height: 100%;
+            padding: 7% 0;
+        }
+       
+    </style>
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="../../index2.html"><b>SO</b>-PM</a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            <p class="login-box-msg">Sign in to start your session</p>
+            <form asp-controller="Login" asp-action="Index" role="form" method="post">
+                <div class="form-group has-feedback">
+                    <input type="text" asp-for="Email" data-val-required="Email Is Required" class="form-control m-input" placeholder="Email address" />
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                    <span asp-validation-for="Email" id="errorEmailId" class="text-danger"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" asp-for="Password" data-val-required="Password Is Required" class="form-control" placeholder="Password">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    <span asp-validation-for="Password" id="errorPassword" class="text-danger"></span>
+                </div>
+                <div class="row">
+                    <!-- /.col -->
+                    <div class="col-xs-4" style="float:right">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+            <!-- /.social-auth-links -->
+            <a href="/Login/ForgotPassword">I forgot my password</a><br>
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery 3 -->
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- iCheck -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/bootstrap-notify.js"></script>
+    <script>
+        $(function () {
+
+            var isAddmsg = '@TempData["ForgotPassword"]';
+            if (isAddmsg != "") {
+                debugger
+            showNotification('top', 'center', isAddmsg);
+            }
+
+            var IsMsg = '@TempData["Success"]';
+
+            if (IsMsg != "") {
+                showNotification('top', 'center', IsMsg)
+            };
+
+            var IsErrorMsg = '@TempData["Error"]';
+
+            if (IsErrorMsg != "") {
+                showErrorNotification('top', 'center', IsErrorMsg)
+            }
+
+            var IsErrorMsg2 = '@TempData["OTPResendFailure"]';
+            if (IsErrorMsg2 != "") {
+                showErrorNotification('top', 'center', IsErrorMsg2)
+            }
+
+        });
+          if ('@ViewBag.EmailSend' != "") {
+        showNotification('top', 'center', '@ViewBag.EmailSend');
+    }
+
+        function showNotification(from, align, msg) {
+            color = 'success';
+
+            $.notify({
+                icon: "now-ui-icons ui-1_bell-53",
+                message: msg
+
+            }, {
+                    type: color,
+                    timer: 2000,
+                    placement: {
+                        from: from,
+                        align: align
+                    }
+                });
+        }
+
+        function showErrorNotification(from, align, msg) {
+
+            color = 'danger';
+
+            $.notify({
+                icon: "now-ui-icons ui-1_bell-53",
+                message: msg
+
+            }, {
+                    type: color,
+                    timer: 4000,
+                    placement: {
+                        from: from,
+                        align: align
+                    }
+                });
+        }
+
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,405 @@
+﻿@model SOPasswordManager.Models.ProjectUserModel
+
+@{
+    ViewData["Title"] = "Project User";
+}
+
+
+<section class="content-header">
+    <h1>
+        Project Data
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Dashboad")"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active"> Project Data</li>
+    </ol>
+</section>
+
+<section class="content" style="min-height:0px !important; padding-bottom: 0px;">
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- /.box -->
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Clients</label>
+                            @if (ViewBag.ClientList != null)
+                            {
+                                <select id="ddlClients" class="form-control select2" asp-items="@(new SelectList(@ViewBag.ClientList, "Value", "Text",ViewBag.Client_ID))"></select>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Projects</label>
+                            @if (ViewBag.ClientProjects != null)
+                            {
+                                <select id="ddlProjects" class="form-control select2" asp-items="@(new SelectList(@ViewBag.ClientProjects, "Value", "Text",ViewBag.Project_ID))"></select>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label></label>
+                            <button type="button" onclick="SearchProjectUser()" style="margin-top:0px" class="btn btn-block btn-info">Search</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+
+            <!-- /.box -->
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Project Data</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example" class="table table-bordered table-striped display responsive nowrap" cellspacing="0" width="100%"></table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+
+<div id="divProjectUserAdd" class="modal fade" role="dialog" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div id="myModalContent" class="modal-content ">
+        </div>
+    </div>
+</div>
+
+<div id="divCredentials">
+
+
+</div>
+
+
+@section Scripts{
+
+    <script src="~/js/DataTableCommon.js"></script>
+    <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" />
+    <link href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css" />
+
+    <script defer src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    @*<script defer src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>*@
+    <script defer src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
+
+
+    <script type="text/javascript">
+
+          var isAddmsg = '@TempData["ForceFullyChange"]';
+            if (isAddmsg != "") {
+            showNotification('top', 'center', isAddmsg);
+            }
+
+        function showNotification(from, align, msg) {
+            color = 'success';
+
+            $.notify({
+                icon: "now-ui-icons ui-1_bell-53",
+                message: msg
+
+            }, {
+                    type: color,
+                    timer: 2000,
+                    placement: {
+                        from: from,
+                        align: align
+                    }
+                });
+        }
+       $(document).ready(function () { 
+       });
+                 
+
+        $('#ddlClients').select2();
+        $("#ddlProjects").select2();
+        console.log("01");
+
+        var isAddmsg = '@TempData["ProjectUserAddSuccess"]';
+        if (isAddmsg != "")
+        {
+            showNotification('top', 'center', isAddmsg);
+        }
+
+        var isEditMsg = '@TempData["ProjectUserEditSuccess"]';
+        if (isEditMsg != "")
+        {
+            showNotification('top', 'center', isEditMsg);
+        }
+
+        var columns;
+        columns = [
+            { "title": "Id", "data": "ProjectUser_ID", "visible": false, "searchable": false },
+            { "title": "Project", "data": "Project_Name", "visible": false, "searchable": false  },
+            { "title": "Name", "data": "Name", "name": "Name" },
+            { "title": "Email", "data": "Email", "visible": false, "searchable": false },
+            {
+                "title": "URL", "data": "URL", "name": "URL", "render": function (data, type, full, meta) {
+                var a = "";
+                if (full.URL != null && full.URL != "") {
+                     a = "<a href='" + addhttp(full.URL) + "' target='_blank'> " + full.URL + "</a>";
+                }
+                return a;
+                }
+            },
+            { "title": "User Name", "data": "User_Name", "visible": false, "searchable": false  },
+            {
+                "title": "Password", "data": "Password", "name": "Password", "searchable": false, "render": function (data, type, full, meta) {
+                var a = "";
+                var quote_str = "'" + full.Password + "'";
+                if (full.Password != null && full.Password != "") {
+                    a = '<a href="javascript:void(0)" onclick="getPassword(' + quote_str+',this)">View</a>';
+                }
+                return a;
+                }
+            },
+            {
+                "responsivePriority": "1", "title": "Description", "data": "Description", "name": "PU.Description", "render": function (data, type, full, meta) {
+                    if (full.Description != null) {
+                        if (full.Description.length > 15) {
+                            return '<span title="' + full.Description + '">' + full.Description.substring(0, 14) + '...</span>';
+                        } else {
+                            return '<span title="' + full.Description + '">' + full.Description + '</span>';
+                        }
+                    }
+                    else
+                        return "";
+                }
+            },
+            {
+                "bSortable": true, "responsivePriority": "2", "className": "text-center", "title": "Action", "data": "Description", "searchable": false, "render": function (data, type, full, meta)
+                {
+                      var url = "@Url.Action("AddProjectUser", "Projects")/" + full.ProjectUser_ID;
+                      var aa = "";
+                      var aa = "<div style = 'display:flex'> <a data-tooltip='true' data-toggle='tooltip' title='Edit'  class='btn btn-sm btn-primary' onclick=\"OpenPopup('divProjectUserAdd', 'myModalContent','" + url + "', 'AddProjectUserForm')\"> <i class='fa fa-edit'></i ></a >&nbsp;";
+                      aa += " <a data-tooltip='true' data-toggle='tooltip' title='Delete'  class='btn btn-sm btn-danger' onclick=funcDeleteProjectUser(" + full.ProjectUser_ID + ") >";
+                      aa += "<i class='fa fa-trash'></i>";
+                      aa += "</a >&nbsp;";
+                     aa += "<a data-tooltip='true' data-toggle='tooltip' title='View Credentials'  class='btn btn-sm btn-primary' onClick='GetCredentials(" + full.ProjectUser_ID + ")'> <i class='fa fa-key'></i ></a ></div>";
+                      return aa;
+                }
+            }
+        ];
+        var inputStr = "";
+        $('#example').on('search.dt', function () {
+            inputStr = $('.dataTables_filter input')[0];
+            console.log(inputStr.value);
+        });
+
+
+        var query = "";
+
+          console.log("aaaaa");
+        var IsSearch = '@TempData["inputStr"]';
+
+
+                $('#example').createGrid({
+                aoColumns: [ { bSearchable: false, bSortable: false }],
+                Columns: columns,
+                Mode: 'ProjectUsers',
+                Url: "../Projects/GetProjectData",
+                SearchParams: { "sSearch": IsSearch, Client_ID: $('#ddlClients').val(),Project_ID: $("#ddlProjects").val() },
+                SortColumn: '0',
+                SortOrder: 'desc',
+                OnAdd: function () {
+                    var sPrjId = $("#ddlProjects").val();
+                     var url = '@Url.Action("AddProjectUser", "Projects")?id=0&sProjectId=' + sPrjId;
+                     OpenPopup('divProjectUserAdd', 'myModalContent', url, 'AddProjectUserForm');
+                },
+                GrdLabels: null,
+            });
+
+
+
+        $("#ddlClients").change(function () {
+            var Client_id = $(this).val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Projects/GetClientsProjects",
+                    data: { client_Id: Client_id },
+                    success: function (data) {
+                        $("#ddlProjects").html("");
+                        var optionhtml1 = '<option value="">' + "Select Project" + '</option>';
+                        $("#ddlProjects").append(optionhtml1);
+
+                        $.each(data, function (i) {
+                            var optionhtml = '<option value="' + data[i].value + '">' + data[i].text + '</option>';
+                            $("#ddlProjects").append(optionhtml);
+                        });
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+    });
+
+        $("#ddlProjects").change(function () {
+        SearchProjectUser();
+    });
+
+    function addhttp(url) {
+            if (!/^(f|ht)tps?:\/\//i.test(url)) {
+                url = "http://" + url;
+            }
+            return url;
+        }
+
+    function strip(html) {
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || "";
+    }
+
+    function GetCredentials(projectUser_Id) {
+            $.ajax({
+                type: "GET",
+                url: "/Projects/GetCredentials",
+                data: { projectUser_Id: projectUser_Id },
+                success: function (data) {
+                    $("#divCredentials").html(data);
+                    $("#credentialsModel").modal("show");
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function SearchProjectUser()
+        {
+        var fixClause = '';
+        var Projects = $("#ddlProjects").val();
+        if (Projects != "" && Projects != null ) {
+                fixClause = 'Project_ID = ' + Projects;
+            }
+        else {
+                return false;
+            }
+
+       if ($.fn.DataTable.isDataTable('#example')) {
+                $('#example').DataTable().destroy();
+            }
+
+        $('#example').createGrid({
+                 responsive: true,
+                 aoColumns: [ { bSearchable: false, bSortable: true }],
+                 Columns: columns,
+                 Mode: 'ProjectUsers',
+                 Url: "../Projects/GetProjectData",
+                     SearchParams: { "sSearch": IsSearch, Client_ID: $('#ddlClients').val(),Project_ID: $("#ddlProjects").val() },
+                 SortColumn: '0',
+                 SortOrder: 'desc',
+                 OnAdd: function () {
+                      var sPrjId = $("#ddlProjects").val();
+                      var url = '@Url.Action("AddProjectUser", "Projects")?id=0&sProjectId=' + sPrjId;
+                      OpenPopup('divProjectUserAdd', 'myModalContent', url, 'AddProjectUserForm');
+                 },
+                 GrdLabels: null,
+             });
+    }
+
+    function funcDeleteProjectUser(projectUserId)
+    {
+        bootbox.confirm({
+        message: 'Are you sure want to delete this record?',
+        buttons: {
+                'confirm': {
+                    label: 'Yes',
+                    className: 'btn-success'
+                } ,
+                'cancel': {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+        callback: function (result)
+        {
+            if (result)
+            {
+                $.ajax({
+                    async: true,
+                    url: '@Url.Action("DeleteProjectUser", "Projects")',
+                    type: 'POST',
+                    data: ({ 'projectUserId': parseInt(projectUserId) }),
+                    success: function (result)
+                    {
+                        if (result.success == true) {
+                                SearchProjectUser();
+                                showNotification('top', 'center', result.message);
+                        }
+                        else {
+                                showErrorNotification('top', 'center', result.message);
+                        }
+                        }
+                });
+            }
+        }
+        });
+    }
+
+    function BindGridData() {
+
+        if ($.fn.DataTable.isDataTable('#example')) {
+            $('#example').DataTable().destroy();
+        }
+        $('#example').createGrid({
+            responsive: true,
+            SearchParams: { "sSearch": query },
+            Columns: columns,
+            Mode: 'ProjectUsers',
+            SortColumn: '0',
+            SortOrder: 'desc',
+            OnAdd: function () {
+                var url = '@Url.Action("AddProjectUser", "Projects")';
+                OpenPopup('divProjectUserAdd', 'myModalContent', url, 'AddProjectUserForm');
+            },
+            GrdLabels: null,
+         });
+    }
+
+        function getPassword(password,obj) {
+            $.ajax({
+                async: true,
+                global:false,
+                    url: '@Url.Action("GetPassword", "Projects")',
+                    data: { 'password': password },
+                    success: function (result)
+                    {
+                        $(obj).html(result);
+                    }
+            });
+
+        }
+
+        function funcClose() {
+            $('#divProjectUserAdd').modal('hide');
+        }
+    </script>
+}

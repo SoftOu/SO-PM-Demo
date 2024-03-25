@@ -1,0 +1,62 @@
+﻿@model SOPasswordManager.Repo.DTO.CityModel
+<!-- Modal content-->
+
+
+@if (Model.CityId == 0)
+{
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modaltitle" class="modal-title">Add City </h4>
+    </div>
+}
+else
+{
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modaltitle" class="modal-title">Edit City</h4>
+    </div>
+}
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col">
+            <form asp-controller="City" asp-action="AddCity" method="post" id="AddCityForm" role="form">
+                <input type="hidden" id="hdnCityId" name="CityId" value="@Model.CityId" />
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Country</label>
+                            <select asp-for="CountryId" tabindex="1" data-val-required="Please select country." class="form-control m-select2" style="width:100%;" asp-items="@(new SelectList(ViewBag.CountryList, "Value", "Text"))">
+                                <option value="">Select Country</option>
+                            </select>
+                            
+                            <span asp-validation-for="CountryId"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>City</label>
+                            <input type="text" asp-for="CityName" name="CityName" class="form-control required" data-val-required="Please enter city." placeholder="City" maxlength="100" tabindex="2" />
+                            <span asp-validation-for="CityName"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <input type="submit" id="btnSave" class="btn btn-primary" value="Save" tabindex="9">
+                            <a href="#" class="btn btn-default " onclick="funcClose()" tabindex="10">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+

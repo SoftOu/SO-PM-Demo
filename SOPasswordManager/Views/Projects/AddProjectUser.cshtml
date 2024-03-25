@@ -1,0 +1,164 @@
+﻿@model SOPasswordManager.Models.ProjectUserModel
+<!-- Modal content-->
+
+@if (Model.ProjectUserId == 0)
+{   
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modaltitle" class="modal-title">Add Project Data</h4>
+    </div>
+}
+else
+{
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modaltitle" class="modal-title">Edit Project Data</h4>
+    </div>
+}
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col">
+            <form asp-controller="Projects" asp-action="AddProjectUser" method="post" id="AddProjectUserForm" role="form">
+                <input type="hidden" id="hdnProjectUser_ID" name="ProjectUserId" value="@Model.ProjectUserId" />
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Project</label>
+                            <select asp-for="projectId" id="projectId" data-val-required="Please select project." class="form-control m-select2 required" name="projectId" asp-items="@(new SelectList(@ViewBag.ProjectList, "Value", "Text"))">
+                                <option value="">Select Project</option>
+                            </select>
+                            <span asp-validation-for="projectId"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>URL</label>
+                            <input type="text" asp-for="Url"  class="form-control" placeholder="URL" maxlength="3000" />
+                            <span asp-validation-for="Url" class=""></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Name</label>
+                            <input type="text" asp-for="Name"  class="form-control" placeholder="Name" maxlength="100" />
+                            <span asp-validation-for="Name" class=""></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Email</label>
+                            <input type="text" asp-for="Email"  class="form-control" placeholder="Email"  />
+                            <span asp-validation-for="Email" class=""></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Username</label>
+                            <input type="text" asp-for="UserName"  class="form-control " placeholder="Username" maxlength="200"  />
+                            <span asp-validation-for="UserName"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Password </label>
+                            <div class="input-group">
+
+                                <input type="password" asp-for="Password" class="form-control " maxlength="120" placeholder="Password" autocomplete="off"/>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" title="Generate Password" onclick="Key();"><i class="fa fa-key"></i></button>
+                                    <button class="btn btn-default" type="button" title="View Password" onclick="View();"><i class="fa fa-eye" id="viewicon"></i></button>
+                                </span>
+                                <span asp-validation-for="Password"></span>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-12">
+                            <label>Description</label>
+                            <textarea asp-for="Description" class="form-control" placeholder="Description" rows="10"></textarea>
+                            <span asp-validation-for="Description"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <input type="submit" id="btnSave" class="btn btn-primary" value="Save">
+                            <a href="#" class="btn btn-default " onclick="funcClose()">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+    </div>
+    </div>
+</div>
+
+
+<script src="~/js/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Password').val('@Model.Password');
+    });
+        function BindProject() {
+            $.ajax({
+                type: "GET",
+                url: "/Projects/GetProjectlist",
+                dataType: "Json",
+                success: function (data) {
+                    $.each(data, function (index, value) {
+                        $('#projectId').append('<option value="' + value.projectId + '">' + value.projectName + '</option>');
+                    });
+                    if ("@Model.projectId" != "") {
+                         $('#projectId').val("@Model.projectId");
+                    }
+                }
+            });
+        }
+
+    function Key() {
+        $.ajax({
+            type: 'GET',
+            url: '/Projects/GeneratePassword',
+            dataType: "json",
+            contentType: "text",
+            data: {
+                    includeLowercase: true,
+                    includeUppercase: true,
+                    includeNumeric: true,
+                    includeSpecial: true,
+                    includeSpaces: false,
+                    lengthOfPassword: 12,
+                },
+            success: function (res) {
+                $('#Password').val(res.message);
+            }
+        });
+    }
+
+    function View() {
+        if ($('#Password').val()!= "") {
+        
+        var x = document.getElementById("Password");
+        if (x.type === "password") {
+            x.type = "text";
+            $('#viewicon').addClass('fa-eye-slash');
+            $('#viewicon').removeClass('fa-eye');
+        }
+        else {
+            x.type = "password";
+            $('#viewicon').removeClass('fa-eye-slash');
+            $('#viewicon').addClass('fa-eye');
+            }
+        }
+    }
+</script>

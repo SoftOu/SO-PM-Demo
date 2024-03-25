@@ -1,0 +1,106 @@
+﻿@model SOPasswordManager.Models.ClientContactsModel
+<!-- Modal content-->
+
+@if (Model.ContactId == 0)
+{
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modaltitle" class="modal-title">Add Contact </h4>
+    </div>
+}
+else
+{
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modaltitle" class="modal-title">Edit Contact</h4>
+    </div>
+}
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col">
+            <form asp-controller="ClientContacts" asp-action="AddClientContact" method="post" id="AddClientContactForm" role="form">
+                <input type="hidden" id="hdnContact_ID" name="ContactId" value="@Model.ContactId" />
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Name</label>
+                            <input type="text" asp-for="Name" class="form-control required" placeholder="Name" data-val-required="Please enter name." maxlength="100" tabindex="1"/>
+                            <span asp-validation-for="Name"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Surname </label>
+                            <input type="text" asp-for="Surname" class="form-control" maxlength="100" placeholder="Surname" tabindex="2" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Email 1</label>
+                            <input type="email" asp-for="Email1" class="form-control"  placeholder="Email 1" maxlength="100" tabindex="3" />
+                            <span asp-validation-for="Email1" class=""></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Email 2</label>
+                            <input type="email" asp-for="Email2" class="form-control" placeholder="Email 2" maxlength="100" tabindex="4" />
+                            <span asp-validation-for="Email2" class=""></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Phone 1</label>
+                            <input type="text" asp-for="PhoneNumber1" class="form-control "  placeholder="Phone 1" maxlength="20" onkeypress="return isNumberKey(event)" tabindex="5"/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Phone 2 </label>
+                            <input type="text" asp-for="PhoneNumber2" class="form-control " maxlength="20" placeholder="Phone 2" onkeypress="return isNumberKey(event)" tabindex="6" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Client</label>
+                            <select asp-for="clientId" id="clientId" data-val-required="Please select client." class="form-control m-select2 required" name="clientId" asp-items="@(new SelectList(@ViewBag.ClientList, "Value", "Text"))" tabindex="7">
+                                <option value="">Select Client</option>
+                            </select>
+                            <span asp-validation-for="clientId"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Notes</label>
+                            <textarea asp-for="Notes" class="form-control" placeholder="Notes" style="margin: 0px -2px 0px 0px; height: 34px; width: 273px;"  tabindex="8"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <input type="submit" id="btnSave" class="btn btn-primary" value="Save" tabindex="9">
+                            <a href="#" class="btn btn-default " onclick="funcClose()" tabindex="10">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+<script type="text/javascript">
+
+
+</script>
+

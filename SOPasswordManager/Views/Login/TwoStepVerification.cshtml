@@ -1,0 +1,128 @@
+﻿@model SOPasswordManager.Repo.DTO.TwoFactorModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>So-Password Manager | Log in</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/css/ionicons.min.css" rel="stylesheet" />
+    <link href="~/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="~/css/blue.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="~/images/favicon.jpg" type="image/png" />
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <style>
+        .login-box, .register-box {
+            max-width: 360px;
+            margin: 0% auto;
+            height: 100%;
+            padding: 7% 0;
+        }
+    </style>
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="../../index2.html"><b>SO</b>-PM</a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            <p class="login-box-msg">Two Step Verification</p>
+            <form asp-controller="Login" asp-action="TwoStepVerification" role="form" method="post">
+                <div class="form-group has-feedback">
+                    <input type="text" asp-for="OTP" data-val-required="OTP is required." onkeypress="return isNumberKey(event)" class="form-control required" placeholder="Enter your OTP here">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    <span asp-validation-for="OTP" id="errorOTP" class="text-danger"></span>
+                </div>
+                <div class="row">
+                    <!-- /.col -->
+                    <div class="col-xs-4" style="float:right">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">Verify</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+            <!-- /.social-auth-links -->
+            <a href="/Login/ResendOTPAsync">Resend OTP</a><br>
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery 3 -->
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- iCheck -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/bootstrap-notify.js"></script>
+    <script>
+        $(function () {
+
+            var IsErrorMsg = '@TempData["Error"]';
+            if (IsErrorMsg != "") {
+                showErrorNotification('top', 'center', IsErrorMsg)
+            }
+
+            var OTPResendSuccess = '@TempData["OTPResendSuccess"]';
+            if (OTPResendSuccess != "") {
+                showNotification('top', 'center', OTPResendSuccess);
+            }
+
+        });
+         
+        function showNotification(from, align, msg) {
+            color = 'success';
+
+            $.notify({
+                icon: "now-ui-icons ui-1_bell-53",
+                message: msg
+
+            }, {
+                    type: color,
+                    timer: 2000,
+                    placement: {
+                        from: from,
+                        align: align
+                    }
+                });
+        }
+
+        function showErrorNotification(from, align, msg) {
+
+            color = 'danger';
+
+            $.notify({
+                icon: "now-ui-icons ui-1_bell-53",
+                message: msg
+
+            }, {
+                    type: color,
+                    timer: 4000,
+                    placement: {
+                        from: from,
+                        align: align
+                    }
+                });
+        }
+
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode != 45 && charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,71 @@
+﻿@model SOPasswordManager.Models.AddProjectUser
+<!-- Modal content-->
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" onclick="funcCancel();">&times;</button>
+    <h4 id="modaltitle" class="modal-title">Add Project User</h4>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col">
+            <form method="post" data-ajax="true" asp-controller="Projects" asp-action="AddProjectUserData" data-ajax-update="divexample1" data-ajax-success="unloadModal">
+                <input type="hidden" id="hdnProjectId" name="projectId" value="@ViewBag.id" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-10">
+                            <label>Project User</label>
+                            <select id="SytemUserId" asp-for="SytemUserId" onblur="validate()" onchange="validate()" data-val="true"  style="width:100%;" class="form-control required"  data-val-required="Please select user." name="SytemUserId[]" multiple="multiple"></select>
+                            <span id="divValid" style="display:none;color:red;">Please select project user.</span>
+                            <span data-valmsg-for="SytemUserId" data-valmsg-replace="true" id="errorSytemUserId" class="field-validation-valid"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-8">
+                            <input type="submit" id="savedata"  class="btn btn-primary" value="Save">
+                            <a href="#" class="btn btn-default " onclick="funcCancel()">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+<script type="text/javascript">
+
+    $(function () {
+        $.ajax({
+            type: "GET",
+            url: "/Projects/GetProjectUserDataList",
+            dataType: "Json",        
+            data: ({ 'projectId': parseInt($("#hdnProjectId").val()) }),           
+            success: function (data) {             
+                $.each(data, function (index, value) {
+                    $('#SytemUserId').append('<option value="' + data[index].value + '">' + data[index].text + '</option>');
+                });                
+                $('#SytemUserId').select2({
+                    placeholder: 'Select an option'
+                });
+            }
+        });
+
+    })
+
+    function validate() {     
+        if ($('#SytemUserId').val().length == 0) {           
+            $('#divValid').show();
+            return false;
+        }
+        if ($('#SytemUserId').val().length != 0) {           
+            $('#divValid').hide();
+            return true;
+        }
+    }
+
+</script>

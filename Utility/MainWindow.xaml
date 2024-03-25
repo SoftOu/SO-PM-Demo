@@ -1,0 +1,56 @@
+﻿<Window x:Class="Utility.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModel="clr-namespace:Utility.ViewModel"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        d:DataContext="{d:DesignInstance viewModel:MainWindowViewModel, IsDesignTimeCreatable=False}"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Text="Enter Connection Strings: " />
+
+            <TextBox Text="{Binding ConnectionStrings}" 
+                     Height="25" Width="300"
+                     VerticalAlignment="Top"
+                     Margin="10 0"/>
+
+            <Button Content="Save" 
+                    Height="25" Width="50"
+                    VerticalAlignment="Top"
+                    IsEnabled="{Binding IsSaveButtonEnable}"
+                    Command="{Binding SaveCommand}"/>
+
+            <TextBlock Text="Loading Please Wait ..." 
+                       Margin=" 5 0"
+                       FontSize="16"
+                       Foreground="Red"
+                       FontWeight="Bold"
+                       Visibility="{Binding LoadingTextVisibility}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal"
+                    Visibility="{Binding InformationGridVisibility}">
+            <TextBlock Text="{Binding TotalUpdatedText}" 
+                       Margin=" 10 0"
+                       FontSize="14"
+                       Foreground="LimeGreen"
+                       FontWeight="Regular" />
+
+            <TextBlock Text="{Binding TotalErrorText}" 
+                       Margin=" 10 0"
+                       FontSize="14"
+                       Foreground="Red"
+                       FontWeight="Regular" />
+        </StackPanel>
+    </Grid>
+</Window>

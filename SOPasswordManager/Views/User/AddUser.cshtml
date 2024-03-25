@@ -1,0 +1,103 @@
+﻿@model SOPasswordManager.Repo.DTO.SystemUserModel
+<!-- Modal content-->
+<style>
+    .check-align {
+        position: relative;
+        top: 30px;
+    }
+        .check-align input[type="checkbox"] {
+            margin-right: 5px;
+            position: relative;
+            top: 2px;
+        }
+</style>
+
+@if (Model.SytemUserId == 0)
+{
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modaltitle" class="modal-title">Add User </h4>
+    </div>
+}
+else
+{
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modaltitle" class="modal-title">Edit User</h4>
+    </div>
+}
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col">
+            <form asp-controller="User" asp-action="AddUser" method="post" id="AddUserForm" role="form">
+                <input type="hidden" id="hdnSytemUserId" name="SytemUserId" value="@Model.SytemUserId" />
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Firt Name</label>
+                            <input type="text" asp-for="FirstName" name="FirstName" class="form-control required" data-val-required="Please enter first name." placeholder="First name" maxlength="100" tabindex="1"/>
+                            <span asp-validation-for="FirstName"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Last Name </label>
+                            <input type="text" asp-for="LastName" class="form-control required" maxlength="100" data-val-required="Please enter last name." placeholder="Last name" tabindex="2"/>
+                            <span asp-validation-for="LastName"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Email</label>
+                            <input type="email" asp-for="Email" class="form-control required" data-val-required="Please enter email." placeholder="Email" maxlength="100" tabindex="3" />
+                            <span asp-validation-for="Email" class=""></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Phone Number</label>
+                            <input type="text" asp-for="PhoneNumber" class="form-control" placeholder="Phone number" maxlength="100" tabindex="4" onkeypress="return isNumberKey(event)" />
+                            <span asp-validation-for="PhoneNumber" class=""></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Client</label>
+                            <select asp-for="RoleId" id="RoleId" data-val-required="Please select role." class="form-control m-select2 required" name="RoleId" asp-items="@(new SelectList(@ViewBag.RoleList, "Value", "Text"))" tabindex="5">
+                                <option value="">Select Role</option>
+                            </select>
+                            <span asp-validation-for="RoleId"></span>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <div class="check-align">
+                                <input type="checkbox" asp-for="Status" />
+                                <label>Is Active</label>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <input type="submit" id="btnSave" class="btn btn-primary" value="Save" tabindex="9">
+                            <a href="#" class="btn btn-default " onclick="funcClose()" tabindex="10">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+

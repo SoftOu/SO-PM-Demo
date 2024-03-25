@@ -1,0 +1,248 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    string UserName = HttpContextAccessor.HttpContext.Session.GetString("Member_Name");
+    string RoleName= HttpContextAccessor.HttpContext.Session.GetString("RoleName");
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+    <title>@ViewData["Title"] - SO-Password Manager</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/css/ionicons.min.css" rel="stylesheet" />
+    <link href="~/css/select2.min.css" rel="stylesheet" />
+    <link href="~/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="~/css/_all-skins.min.css" rel="stylesheet" />
+    <link href="~/css/common.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="shortcut icon" href="~/images/favicon.jpg" type="image/png" />
+    <style>
+        .field-validation-error {
+            color: red;
+        }
+    </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <header class="main-header">
+            <!-- Logo -->
+            @*<a href="@Url.Action("Index", "Dashboad")"></a>*@
+            <a href="@Url.Action("ProjectUser", "Projects")" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>P</b>M</span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>SO-</b>PM</span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li class=""><div id="google_translate_element" style=""></div></li>
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="~/images/user.png" class="user-image" alt="User Image">
+                                @*<img src="~/images/user2-160x160.jpg" class="user-image" alt="User Image">*@
+                                <span class="hidden-xs"> @UserName</span>
+                            </a>
+
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <img src="~/images/user.png" class="img-circle" alt="User Image">
+                                    <p>
+                                        @UserName
+                                    </p>
+                                </li>
+                                <!-- Menu Body -->
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="/Login/ChangePassword" class="btn btn-default btn-flat">Change Password</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="/Login/Logout" class="btn btn-default btn-flat">Sign out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        @*<img src="~/images/user2-160x160.jpg" class="img-circle" alt="User Image">*@
+                        <img src="~/images/user.png" class="img-circle" alt="User Image">
+                    </div>
+                    <div class="pull-left info">
+                        <p> @UserName</p>
+                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    </div>
+                </div>
+                <!-- search form -->
+                <form action="#" method="get" class="sidebar-form">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+                <!-- /.search form -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="header">MAIN NAVIGATION</li>
+
+                    @if (RoleName == "Admin")
+                    {
+
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-cogs"></i><span>Configuration</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li id="divCountry"><a href="@Url.Action("Index","Country")"><i class="fa fa-list-ul"></i>Country</a></li>
+                                <li id="divCity"><a href="@Url.Action("Index","City")"><i class="fa fa-list-ul"></i> City</a></li>
+                            </ul>
+                        </li>
+
+
+                        <li id="divUser">
+                            <a href="/User">
+                                <i class="fa fa-user"></i> <span>Users</span>
+                            </a>
+                        </li>
+
+
+                        <li id="divClientContacts">
+                            <a href="/ClientContacts">
+                                <i class="fa fa-address-book"></i> <span>Client Contacts</span>
+                            </a>
+                        </li>
+                        <li id="divClients">
+                            <a href="/Client">
+                                <i class="fa fa-users"></i> <span>Clients</span>
+                            </a>
+                        </li>
+                        <li id="divProvider">
+                            <a href="/Provider">
+                                <i class="fa fa-users"></i> <span>Provider</span>
+                            </a>
+                        </li>
+                        <li id="divProviderContacts">
+                            <a href="/ProviderContacts">
+                                <i class="fa fa-address-book"></i> <span>Provider Contacts</span>
+                            </a>
+                        </li>
+                    }
+
+
+
+                    <li id="divProjects">
+                        <a href="/Projects">
+                            <i class="fa fa-product-hunt"></i> <span>Projects</span>
+                        </a>
+                    </li>
+                    <li id="divProjectData">
+                        <a href="/Projects/ProjectUser">
+                            <i class="fa fa-key"></i> <span>Projects Data</span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <div id="loading-image" style="display:none">
+                <div id="image-loading">
+                    <img src="~/images/loading.gif" />
+                </div><div class="bg"></div>
+            </div>
+            @RenderBody()
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b>1.0.0
+            </div>
+            <strong>Copyright &copy; 2019 <a href="#">So-Password Manager</a>.</strong> All rights
+            reserved.
+        </footer>
+        <!-- Add the sidebar's background. This div must be placed
+             immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+    </div>
+    <!-- ./wrapper -->
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/js/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/js/bootbox.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/jquery.slimscroll.min.js"></script>
+    <script src="~/js/fastclick.js"></script>
+    <script src="~/js/adminlte.min.js"></script>
+    <script src="~/js/demo.js"></script>
+    <script src="~/js/bootstrap-notify.js"></script>
+    <script src="~/js/common.js"></script>
+    <script src="~/js/select2.full.min.js"></script>
+    @*<script type="text/javascript" src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>*@
+    <script>
+        //function googleTranslateElementInit() {
+        //    new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'en,es,it,fr,de', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false }, 'google_translate_element');
+        //}
+        $(document).ready(function () {
+            var IsMsg = '@TempData["Success"]';
+
+            if (IsMsg != "") {
+                showNotification('top', 'center', IsMsg)
+            };
+
+            var IsErrorMsg = '@TempData["Error"]';
+
+            if (IsErrorMsg != "") {
+                showErrorNotification('top', 'center', IsErrorMsg)
+            }
+
+            var current = location.pathname;
+            var url = window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
+            $('.treeview-menu li').removeClass('active');
+            $('[href$="' + current + '"]').parent().addClass("active");
+            $('.treeview').removeClass('menu-open active');
+            $('[href$="' + current + '"]').closest('li.treeview').addClass("menu-open active");
+        });
+
+        $(document).ajaxSend(function (event, jqxhr, settings) {
+            $("#loading-image").show();
+        });
+
+        $(document).ajaxStop(function (event, jqxhr, settings) {
+            $("#loading-image").hide();
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

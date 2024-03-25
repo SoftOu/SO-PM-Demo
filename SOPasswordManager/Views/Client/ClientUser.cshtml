@@ -1,0 +1,240 @@
+﻿
+@{
+    ViewData["Title"] = "Client User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/css/select2.css" rel="stylesheet" />
+<section class="content-header">
+    <h1>
+        Client User
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Dashboad")"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Client User</li>
+    </ol>
+</section>
+
+<section class="content" style="min-height:0px !important; padding-bottom: 0px;">
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- /.box -->
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Clients</label>
+
+                            @if (ViewBag.ClientList != null)
+                            {
+                                <select id="ddlClients" class="form-control" multiple="multiple" asp-items="@(new SelectList(@ViewBag.ClientList, "Value", "Text"))"></select>
+                            }
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label></label>
+                            <button type="button" onclick="SearchClientUser()" style="margin-top:5px" class="btn btn-block btn-info">Search</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- /.box -->
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Client User List</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example" class="table table-bordered table-striped" cellspacing="0" width="100%"></table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+
+<!--Modal-->
+<div id="divClientUserAdd" class="modal fade" role="dialog" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div id="myModalContent" class="modal-content ">
+        </div>
+    </div>
+</div>
+<!--Modal-->
+
+
+@section Scripts{
+    @*<script src="~/js/jquery.dataTables.min.js"></script>*@
+    @*<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>*@
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/js/DataTableCommon.js"></script>
+    <script src="~/js/select2.full.js"></script>
+    <script src="~/js/common.js"></script>
+    <script type="text/javascript">
+    var columns;
+    var ismsg = '@TempData["ClientUserAddSuccess"]';
+    if (ismsg != "") {
+        showNotification('top', 'center', ismsg);
+    }
+    var isEditMsg = '@TempData["ClientUserEditSuccess"]';
+    if (isEditMsg != "")
+    {
+        showNotification('top', 'center', isEditMsg);
+    }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode != 45 && charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+   $(document).ready(function () {
+
+       $('#ddlClients').select2();
+
+        columns = [
+                { "title": "Id", "data": "ClientUser_ID", "visible": false },
+                { "title": "Name", "data": "Name" },
+                { "title": "Email", "data": "Email" },
+                { "title": "PhoneNumber", "data": "PhoneNumber" },
+                { "title": "Client", "data": "Client" },
+                { "title": "Role", "data": "Role" },
+                {
+                     "bSortable": false, "className": "text-center", "title": "Action", "render": function (data, type, full, meta) {
+                        var url = "@Url.Action("AddClientUser", "Client")/" + JSON.stringify(full.ClientUser_ID);
+                        var aa = "<a data-tooltip='true' data-toggle='tooltip' title='Edit' onclick=\"OpenPopup('divClientUserAdd', 'myModalContent','" + url + "', 'AddClientUserForm')\"  class='btn btn-sm btn-primary'> <i class='fa fa-edit'></i ></a >";
+                         aa += " <a data-tooltip='true' data-toggle='tooltip' title='Delete' onclick=funcDeleteClient(" + full.ClientUser_ID + ") class='btn btn-sm btn-danger' >";
+                         aa += "<i class='fa fa-trash'></i>";
+                         aa += "</a >";
+                         return aa;
+                       }
+                }
+
+       ];
+
+        $('#example').createGrid({
+            responsive: true,
+            Columns: columns,
+            Mode: 'ClientUser',
+            SortColumn: '0',
+            SortOrder: 'desc',
+            FixClause:'',
+            OnAdd: function () {
+                var url = '@Url.Action("AddClientUser", "Client")';
+                OpenPopup('divClientUserAdd', 'myModalContent', url, 'AddClientUserForm');
+            },
+            GrdLabels: null,
+        });
+
+   });
+
+
+   function SearchClientUser() {
+            var fixClause = '';
+            var Clients = $("#ddlClients").val();
+            if (Clients.length > 0) {
+                for (var i = 0; i < Clients.length; i++) {
+                    fixClause += "'" + Clients[i] + "',";
+                }
+                 fixClause = fixClause.replace(/^,|,$/g, '');
+                 fixClause = 'Client_ID IN (' + fixClause + ')';
+            }
+
+            if ($.fn.DataTable.isDataTable('#example')) {
+                $('#example').DataTable().destroy();
+            }
+            $('#example').createGrid({
+             responsive: true,
+             Columns: columns,
+             Mode: 'ClientUser',
+             SortColumn: '0',
+             SortOrder: 'desc',
+             FixClause: fixClause,
+             OnAdd: function () {
+                  var url = '@Url.Action("AddClientUser", "Client")';
+                OpenPopup('divClientUserAdd', 'myModalContent', url, 'AddClientUserForm');
+             },
+             GrdLabels: null,
+        });
+    }
+
+    function funcDeleteClient(clientUserId)
+    {
+        bootbox.confirm({
+            message: 'Are you sure want to delete this record?',
+            buttons: {
+                'confirm': {
+                    label: 'Yes',
+                    className: 'btn-success'
+                } ,
+                'cancel': {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result)
+            {
+                if (result)
+                {
+                    $.ajax({
+                        async: true,
+                        url: '@Url.Action("DeleteClientUser", "Client")',
+                        type: 'POST',
+                        data: ({ 'clientUserId': parseInt(clientUserId) }),
+                        success: function (result)
+                        {
+                            if (result.success == true) {
+                                SearchClientUser();
+                                showNotification('top', 'center', result.message)
+                            }
+                            else {
+                                showErrorNotification('top', 'center', result.message)
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+    function BindGridData() {
+        if ($.fn.DataTable.isDataTable('#example')) {
+            $('#example').DataTable().destroy();
+        }
+        $('#example').createGrid({
+            responsive: true,
+            Columns: columns,
+            Mode: 'ClientUser',
+            SortColumn: '0',
+            SortOrder: 'desc',
+            OnAdd: function () {
+                var url = '@Url.Action("AddClientUser", "Client")';
+                OpenPopup('divClientUserAdd', 'myModalContent', url, 'AddClientUserForm');
+            },
+            GrdLabels: null,
+        });
+    }
+
+    </script>
+
+}
+

@@ -1,0 +1,185 @@
+﻿
+@{
+    ViewData["Title"] = "Cities";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model SOPasswordManager.Repo.DTO.CityModel
+@using Microsoft.AspNetCore.Http;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    string UserName = HttpContextAccessor.HttpContext.Session.GetString("Member_Name");
+    string RoleName = HttpContextAccessor.HttpContext.Session.GetString("RoleName");
+}
+
+
+@if (RoleName == "Admin")
+{
+    <link href="~/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+
+    <section class="content-header">
+        <h1>
+            Cities
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Dashboad")"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Cities</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+
+                <!-- /.box -->
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title"> Cities</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="example" class="table table-bordered table-striped" cellspacing="0" width="100%"></table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+
+    <div id="divCityAdd" class="modal fade" role="dialog" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div id="myModalContent" class="modal-content ">
+            </div>
+        </div>
+    </div>
+
+
+    @section Scripts{
+    @*<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>*@
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+        <script src="~/js/dataTables.bootstrap.min.js"></script>
+        <script src="~/js/DataTableCommon.js"></script>
+        <script type="text/javascript">
+
+    var isAddmsg = '@TempData["CityAddSuccess"]';
+        if (isAddmsg != "") {
+            showNotification('top', 'center', isAddmsg);
+    }
+    var isEditMsg = '@TempData["CityEditSuccess"]';
+    if (isEditMsg != "")
+    {
+        showNotification('top', 'center', isEditMsg);
+    }
+
+    var columns;
+    $(document).ready(function () {
+    columns = [
+        { "title": "Country_ID", "data": "Country_ID", "visible": false, "searchable": false },
+        { "title": "City", "data": "City", "name": "CC.City_Name" },
+        { "title": "City_ID", "data": "City_ID", "visible": false, "searchable": false },
+        { "title": "Country", "data": "Country", "name": "C.County_Name" },
+        {
+            "bSortable": false, "className": "text-center", "searchable": false, "title": "Action", "render": function (data, type, full, meta)
+            {
+
+                var url = "@Url.Action("AddCity", "City")/" + full.City_ID;
+                var aa = "";
+                var aa = "<a data-tooltip='true' data-toggle='tooltip' title='Edit'  class='btn btn-sm btn-primary' onclick=\"OpenPopup('divCityAdd', 'myModalContent','" + url + "', 'AddCityForm')\"> <i class='fa fa-edit'></i ></a >";
+                aa += " <a data-tooltip='true' data-toggle='tooltip' title='Delete'  class='btn btn-sm btn-danger' onclick=funcDeleteCity(" + full.City_ID + ") >";
+                aa += "<i class='fa fa-trash'></i></a >";
+                return aa;
+            }
+        }
+    ];
+
+    $('#example').createGrid({
+            responsive: true,
+            Columns: columns,
+            Mode: 'City',
+            SortColumn: '1',
+            SortOrder: 'asc',
+            OnAdd: function () {
+                var url = '@Url.Action("AddCity", "City")';
+                OpenPopup('divCityAdd', 'myModalContent', url, 'AddCityForm');
+            },
+            GrdLabels: null,
+    });
+    });
+
+    function funcDeleteCity(cityId)
+    {
+        bootbox.confirm({
+        message: 'Are you sure want to delete this record?',
+        buttons: {
+                'confirm': {
+                    label: 'Yes',
+                    className: 'btn-success'
+                } ,
+                'cancel': {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+        callback: function (result)
+        {
+            if (result)
+            {
+                $.ajax({
+                    async: true,
+                    url: '@Url.Action("DeleteCity", "City")',
+                    type: 'POST',
+                    data: ({ 'cityId': parseInt(cityId) }),
+                    success: function (result)
+                    {
+                        if (result.success == true) {
+                                BindGridData()
+                                showNotification('top', 'center', result.message)
+                            }
+                        else {
+                                showErrorNotification('top', 'center', result.message)
+                            }
+                        }
+                });
+            }
+        }
+        });
+    }
+
+    function BindGridData()
+    {
+        if ($.fn.DataTable.isDataTable('#example')) {
+            $('#example').DataTable().destroy();
+        }
+        $('#example').createGrid({
+            responsive: true,
+            Columns: columns,
+            Mode: 'City',
+            SortColumn: '1',
+            SortOrder: 'asc',
+            OnAdd: function () {
+                var url = '@Url.Action("AddCity", "City")';
+                OpenPopup('divCityAdd', 'myModalContent', url, 'AddCityForm');
+            },
+            GrdLabels: null,
+         });
+    }
+
+    function funcClose() {
+        $('#divCityAdd').modal('hide');
+        }
+
+        </script>
+    }
+}
+else
+{
+    @Html.Partial("~/Views/Shared/_UnAuthorized.cshtml");
+}
+
+
+
+

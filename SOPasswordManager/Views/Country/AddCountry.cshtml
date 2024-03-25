@@ -1,0 +1,54 @@
+﻿@model SOPasswordManager.Repo.DTO.CountryModel
+<!-- Modal content-->
+
+
+@if (Model.CountryId == 0)
+{
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modaltitle" class="modal-title">Add Country </h4>
+    </div>
+}
+else
+{
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modaltitle" class="modal-title">Edit Country</h4>
+    </div>
+}
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col">
+            <form asp-controller="Country" asp-action="AddCountry" method="post" id="AddCountryForm" role="form">
+                <input type="hidden" id="hdnCountryId" name="CountryId" value="@Model.CountryId" />
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-12">
+                            <label>Country</label>
+                            <input type="text" asp-for="CountryName" name="CountryName" class="form-control required" data-val-required="Please enter country." placeholder="Country" maxlength="100" tabindex="1" />
+                            <span asp-validation-for="CountryName"></span>
+                        </div>                       
+                    </div>
+                </div>
+              
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <input type="submit" id="btnSave" class="btn btn-primary" value="Save" tabindex="9">
+                            <a href="#" class="btn btn-default " onclick="funcClose()" tabindex="10">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+
